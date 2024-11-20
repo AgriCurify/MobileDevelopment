@@ -10,4 +10,19 @@
     <string name="lets_start">Ayo Mulai</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="prakiraan_cuaca">Prakiraan Cuaca</string>
+    <string name="riwayat_penyakit_tumbuhan">Riwayat Penyakit Tumbuhan</string>
+    <string name="contentdesc_edit">Edit</string>
+    <string name="name">Nama</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="update">Update</string>
+    <string name="detail">Detail</string>
+    <string name="diagnosis">Diagnosis</string>
+    <string name="note">Note :</string>
+    <string name="note_message">Saat ini aplikasi AgriCurify hanya bisa untuk buah-buahan tertentu seperti Apel, Anggur, dan Tomat.</string>
+    <string name="scan">Scan</string>
+    <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
+    <string name="image_classifier_failed">Image classifier failed to initialize. See error logs for details</string>
+
 </resources>
