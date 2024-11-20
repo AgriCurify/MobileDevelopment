@@ -3,6 +3,7 @@ package com.example.agricurify
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -12,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.agricurify.databinding.ActivityMainBinding
+import com.example.agricurify.ui.ImageDetector.ImageDetectorActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +45,11 @@ class MainActivity : AppCompatActivity() {
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
+        }
+
+        binding.cameraScan.setOnClickListener {
+            val intent = Intent(this, ImageDetectorActivity::class.java)
+            startActivity(intent)
         }
 
         // Set flag supaya Onboarding tidak muncul lagi di masa depan
