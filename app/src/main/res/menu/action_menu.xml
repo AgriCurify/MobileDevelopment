@@ -7,7 +7,7 @@
             android:id="@+id/settings"
             android:icon="@drawable/baseline_settings_24"
             android:title="@string/settings"
-            app:showAsAction="ifRoom" />
+            app:showAsAction="never" />
     </group>
 
 </menu>
