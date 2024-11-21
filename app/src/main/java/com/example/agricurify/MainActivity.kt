@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             binding.cameraScan.setOnClickListener {
             val intent = Intent(this, ImageDetectorActivity::class.java)
             startActivity(intent)
-        }
+            }
         }
 
         // Set flag supaya Onboarding tidak muncul lagi di masa depan
