@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         // Cek apakah ini pertama kali aplikasi dibuka
         val preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         val isFirstRun = preferences.getBoolean("isFirstRun", true)
@@ -45,12 +46,14 @@ class MainActivity : AppCompatActivity() {
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
+
+            binding.cameraScan.setOnClickListener {
+                val intent = Intent(this, ImageDetectorActivity::class.java)
+                startActivity(intent)
+            }
         }
 
-        binding.cameraScan.setOnClickListener {
-            val intent = Intent(this, ImageDetectorActivity::class.java)
-            startActivity(intent)
-        }
+
 
         // Set flag supaya Onboarding tidak muncul lagi di masa depan
         val editor = preferences.edit()
