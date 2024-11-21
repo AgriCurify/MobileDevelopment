@@ -3,30 +3,21 @@ package com.example.agricurify.ui.ImageDetector
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Message
 import android.provider.OpenableColumns
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.agricurify.R
 import com.example.agricurify.databinding.ActivityImageDetectorBinding
-import com.example.agricurify.helper.ImageClassifierHelper
 import com.example.agricurify.ui.result.ResultActivity
 import com.example.agricurify.utils.getImageUri
-import org.tensorflow.lite.task.vision.classifier.Classifications
-import java.text.NumberFormat
 
 class ImageDetectorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityImageDetectorBinding
-
-    private var currentImageUri: Uri? = null
-
-    private lateinit var imageClassifierHelper: ImageClassifierHelper
+    private lateinit var viewModel: ImageDetectorViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,73 +25,72 @@ class ImageDetectorActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        binding.clipButton.setOnClickListener { startGallery() }
-        binding.cameraButton.setOnClickListener{ startCamera() }
-        binding.btnScan.setOnClickListener {
-            analyzeImage()
-        }
+        viewModel = ViewModelProvider(this)[ImageDetectorViewModel::class.java]
 
-        imageClassifierHelper = ImageClassifierHelper(
-            context = this,
-            classifierListener = object : ImageClassifierHelper.ClassifierListener {
-                override fun onError(error: String) {
-                    runOnUiThread {
-                        binding.progressIndicator.visibility = View.GONE
-                        showToast(error)
-                    }
-                }
-
-                override fun onResult(results: List<Classifications>?) {
-                    runOnUiThread {
-                        binding.progressIndicator.visibility = View.GONE
-                        results?.let {
-                            if (it.isNotEmpty() && it[0].categories.isNotEmpty()) {
-                                val label = it[0].categories[0].label
-                                val score = NumberFormat.getPercentInstance().format(it[0].categories[0].score).trim()
-
-                                moveToResult(label, score)
-
-                            }
-                        }
-                    }
-                }
-
-            }
-        )
-
-
+        setupListeners()
+        observeViewModel()
     }
 
-    private fun analyzeImage() {
+    private fun setupListeners() {
+        binding.clipButton.setOnClickListener { startGallery() }
+        binding.cameraButton.setOnClickListener { startCamera() }
+        binding.btnScan.setOnClickListener {
+            viewModel.currentImageUri.value?.let { uri ->
+                viewModel.classifyImage(uri)
+            } ?: showToast(getString(R.string.empty_image_warning))
+        }
+    }
 
-        currentImageUri?.let { uri ->
-            imageClassifierHelper.classifyStaticImage(uri)
-        } ?: showToast(getString(R.string.empty_image_warning))
+    private fun observeViewModel() {
+        viewModel.currentImageUri.observe(this) { uri ->
+            uri?.let {
+                binding.previewImageView.setImageURI(it)
+                binding.tvPreview.text = getFileNameFromUri(it)
+            }
+        }
+
+        viewModel.classificationResult.observe(this) { result ->
+            result?.let { (label, score) ->
+                moveToResult(label, score)
+            }
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        viewModel.error.observe(this) { error ->
+            error?.let {
+                showToast(it)
+                viewModel.clearError()
+            }
+        }
     }
 
     private fun moveToResult(label: String, score: String) {
-        val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra(ResultActivity.EXTRA_LABEL, label)
-        intent.putExtra(ResultActivity.EXTRA_SCORE, score)
-        intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
+        val intent = Intent(this, ResultActivity::class.java).apply {
+            putExtra(ResultActivity.EXTRA_LABEL, label)
+            putExtra(ResultActivity.EXTRA_SCORE, score)
+            putExtra(ResultActivity.EXTRA_IMAGE_URI, viewModel.currentImageUri.value.toString())
+        }
         startActivity(intent)
     }
 
     private fun startCamera() {
-        val (uri, imaName) = getImageUri(this)
-        currentImageUri = uri
-        launcherIntentCamera.launch(currentImageUri!!)
+        val (uri, _) = getImageUri(this)
+        viewModel.setCurrentImageUri(uri)
+        launcherIntentCamera.launch(uri)
     }
 
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.TakePicture()
-    ){ isSuccess ->
+    ) { isSuccess ->
         if (isSuccess) {
-            showImage()
-            val (uri, imageName) = getImageUri(this)
-            binding.tvPreview.text = imageName
+            viewModel.currentImageUri.value?.let {
+                showImage()
+            }
         } else {
-            currentImageUri = null
+            viewModel.setCurrentImageUri(null)
         }
     }
 
@@ -112,26 +102,20 @@ class ImageDetectorActivity : AppCompatActivity() {
 
     private val launchGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
-    ) {uri : Uri? ->
-        if (uri != null) {
-            currentImageUri = uri
+    ) { uri: Uri? ->
+        uri?.let {
+            viewModel.setCurrentImageUri(it)
             showImage()
-
-            val imageName = getFileNameFromUri(uri)
-            binding.tvPreview.text = imageName
-        } else {
-            showToast(getString(R.string.empty_image_warning))
-        }
+        } ?: showToast(getString(R.string.empty_image_warning))
     }
 
-    private fun getFileNameFromUri(uri: Uri) : String {
+    private fun getFileNameFromUri(uri: Uri): String {
         var imageName = ""
-        val cursor = contentResolver.query(uri, null, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (displayNameIndex != 1){
-                    imageName = it.getString(displayNameIndex)
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex >= 0) {
+                    imageName = cursor.getString(nameIndex)
                 }
             }
         }
@@ -143,7 +127,7 @@ class ImageDetectorActivity : AppCompatActivity() {
     }
 
     private fun showImage() {
-        currentImageUri?.let {
+        viewModel.currentImageUri.value?.let {
             binding.previewImageView.setImageURI(it)
         }
     }
