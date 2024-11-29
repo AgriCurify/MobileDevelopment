@@ -10,6 +10,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import com.example.agricurify.MainActivity
 import com.example.agricurify.R
 import com.example.agricurify.databinding.ActivityImageDetectorBinding
 import com.example.agricurify.ui.result.ResultActivity
@@ -24,6 +26,10 @@ class ImageDetectorActivity : AppCompatActivity() {
         binding = ActivityImageDetectorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
+
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
 
         viewModel = ViewModelProvider(this)[ImageDetectorViewModel::class.java]
 
@@ -131,4 +137,5 @@ class ImageDetectorActivity : AppCompatActivity() {
             binding.previewImageView.setImageURI(it)
         }
     }
+
 }
