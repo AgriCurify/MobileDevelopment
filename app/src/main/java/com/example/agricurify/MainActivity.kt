@@ -45,12 +45,14 @@ class MainActivity : AppCompatActivity() {
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
+
+            binding.cameraScan.setOnClickListener {
+                val intent = Intent(this, ImageDetectorActivity::class.java)
+                startActivity(intent)
+            }
         }
 
-        binding.cameraScan.setOnClickListener {
-            val intent = Intent(this, ImageDetectorActivity::class.java)
-            startActivity(intent)
-        }
+
 
         // Set flag supaya Onboarding tidak muncul lagi di masa depan
         val editor = preferences.edit()
