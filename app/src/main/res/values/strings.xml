@@ -13,8 +13,8 @@
     <string name="prakiraan_cuaca">Prakiraan Cuaca</string>
     <string name="riwayat_penyakit_tumbuhan">Riwayat Penyakit Tumbuhan</string>
     <string name="contentdesc_edit">Edit</string>
-    <string name="name">Nama</string>
-    <string name="email">Email</string>
+    <string name="name">Nama Lengkap</string>
+    <string name="email">Alamat Email</string>
     <string name="password">Password</string>
     <string name="update">Update</string>
     <string name="detail">Detail</string>
@@ -24,5 +24,15 @@
     <string name="scan">Scan</string>
     <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
     <string name="image_classifier_failed">Image classifier failed to initialize. See error logs for details</string>
+    <string name="sign">Sign</string>
+    <string name="in">In</string>
+    <string name="welcome">Selamat Datang</string>
+    <string name="Silahkan">Silahkan masuk dengan akun yang telah terdaftar</string>
+    <string name="Blum_punya_akun">Belum Punya Akun?</string>
+    <string name="SignIn">Masuk</string>
+    <string name="SignUp">Daftar</string>
+    <string name="sdh_punya_akun">Sudah Punya Akun?</string>
+    <string name="slmt">Selamat datang di AgriCurify! Silahkan lengkapi data dibawah ini!</string>
+    <string name="logout">Logout</string>
 
 </resources>
