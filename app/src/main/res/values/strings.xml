@@ -34,5 +34,6 @@
     <string name="sdh_punya_akun">Sudah Punya Akun?</string>
     <string name="slmt">Selamat datang di AgriCurify! Silahkan lengkapi data dibawah ini!</string>
     <string name="logout">Logout</string>
+    <string name="crop_error">Failed to crop the image</string>
 
 </resources>
