@@ -2,6 +2,7 @@ package com.example.agricurify.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,9 +14,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.agricurify.R
 import com.example.agricurify.data.response.WeatherResponse
 import com.example.agricurify.databinding.FragmentHomeBinding
+import com.example.agricurify.ui.history.HistoryActivity
+import com.example.agricurify.ui.history.HistoryFragment
 import com.example.agricurify.ui.viewmodel.MainViewModel
 import com.example.agricurify.ui.viewmodel.ViewModelFactory
 import com.example.agricurify.utils.formatDate
@@ -69,22 +74,35 @@ class HomeFragment : Fragment() {
             hide()
         }
 
-        requestPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
+        binding.tvHistoryNav.setOnClickListener {
+            val intent = Intent(requireActivity(), HistoryActivity::class.java)
+            requireActivity().startActivity(intent)
 
-        viewModel.getWeatherData()
+        }
+
+        if (viewModel.weatherData.value == null) {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+            viewModel.getWeatherData()
+        }
+
         viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
             if (weather != null) {
                 updateCurrentWeather(weather)
                 updateForecastWeather(weather)
             }
         }
+
+        viewModel.isLoading.observe(viewLifecycleOwner){
+            showLoading(it)
+        }
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCurrentWeather(weather: WeatherResponse) {
         val currentDateTime = ZonedDateTime.now(ZoneId.systemDefault()) // Gunakan ZonedDateTime
@@ -111,6 +129,13 @@ class HomeFragment : Fragment() {
 
             val formattedDate = formatDate(forecast.dtTxt)
             binding.tvdate.text = formattedDate
+
+            val city = weather.city.name
+            val countryCode = weather.city.country
+            val locale = Locale("", countryCode)
+            val countryName = locale.displayCountry
+
+            binding.tvLocation.text = "$city, $countryName"
         }
     }
 
@@ -149,6 +174,12 @@ class HomeFragment : Fragment() {
             val formatDate = formatDateInDay(weatherItem.dtTxt)
             dateViews[index].text = formatDate
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.cardView.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.cardForecast.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 
     override fun onDestroyView() {
