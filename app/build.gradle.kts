@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -15,6 +16,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", "\"a1d91f746849c525b26c14cf44cd7a6f\"")
+
+
     }
 
     buildTypes {
@@ -34,6 +39,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -54,6 +60,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.tensorflow.lite.task.vision)
+    implementation("org.tensorflow:tensorflow-lite:2.16.1")
 
     implementation(libs.circleimageview)
 
@@ -71,6 +78,6 @@ dependencies {
     implementation(libs.glide)
 
     //shimmer effect
-    implementation (libs.shimmer)
+    implementation(libs.shimmer)
 
 }
