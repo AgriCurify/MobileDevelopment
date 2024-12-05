@@ -1,5 +1,6 @@
 package com.example.agricurify.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,6 +20,19 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
     private val _modelData = MutableLiveData<ModelResponse?>(null)
     val modelData: LiveData<ModelResponse?> = _modelData
 
+    private val _croppedFileName = MutableLiveData<String>()
+    val croppedFileName: LiveData<String> = _croppedFileName
+
+    private val _croppedImageUri = MutableLiveData<Uri?>()
+    val croppedImageUri: LiveData<Uri?> = _croppedImageUri
+
+    fun setCroppedFileName(fileName: String) {
+        _croppedFileName.value = fileName
+    }
+
+    fun setCroppedImageUri(uri: Uri?) {
+        _croppedImageUri.value = uri
+    }
 
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?> = _errorMessage
