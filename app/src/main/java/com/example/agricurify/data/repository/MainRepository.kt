@@ -72,6 +72,25 @@ class MainRepository private constructor(
         }
     }
 
+    suspend fun getGrapeDetection(file: File): ModelResponse {
+        @Suppress("UNREACHABLE_CODE")
+        return try {
+            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "file",
+                file.name,
+                requestImageFile
+            )
+            return apiServiceDetection.uploadGrapeImage(
+                file = multipartBody
+            )
+        } catch (@SuppressLint("NewApi") e: HttpException){
+            throw e
+        } catch (e: IOException) {
+            throw e
+        }
+    }
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         @Volatile
