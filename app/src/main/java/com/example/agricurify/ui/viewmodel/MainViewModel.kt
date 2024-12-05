@@ -68,6 +68,26 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
             } catch (e: HttpException) {
                 _errorMessage.value = "Network error: ${e.message}"
                 _isLoading.value = false
+            }catch (e: Exception) {
+                _errorMessage.value = "Error: ${e.message}"
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun uploadGrapeImage(file: File) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val response = repository.getGrapeDetection(file)
+                _modelData.value = response
+                _isLoading.value = false
+            } catch (e: HttpException) {
+                _errorMessage.value = "Network error: ${e.message}"
+                _isLoading.value = false
+            } catch (e: Exception) {
+                _errorMessage.value = "Error: ${e.message}"
+                _isLoading.value = false
             }
         }
     }
