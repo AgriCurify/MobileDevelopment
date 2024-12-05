@@ -25,6 +25,7 @@
     <string name="image_classifier_failed">Image classifier failed to initialize. See error logs for details</string>
     <string name="sign">Sign</string>
     <string name="in">In</string>
+    <string name="up">Up</string>
     <string name="welcome">Selamat Datang</string>
     <string name="Silahkan">Silahkan masuk dengan akun yang telah terdaftar</string>
     <string name="Blum_punya_akun">Belum Punya Akun?</string>
@@ -40,5 +41,7 @@
     <string name="upload_error_message">Gagal mengupload gambar</string>
     <string name="select_item_warning">Pilih jenis buah terlebih dahulu</string>
     <string name="downloading_model_fail">Model gagal diunduh</string>
+    <string name="team_name">C242-PS224 Team</string>
+    <string name="logo_app">logo app</string>
 
 </resources>
