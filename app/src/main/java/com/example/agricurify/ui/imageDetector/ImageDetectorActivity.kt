@@ -121,7 +121,7 @@ class ImageDetectorActivity : AppCompatActivity() {
     }
 
     private fun startCrop(uri: Uri) {
-        val destinationFile = File(cacheDir, "CROP_${System.currentTimeMillis()}.jpg")
+        val destinationFile = File(cacheDir, "IMG_${System.currentTimeMillis()}.jpg")
         val destinationUri = Uri.fromFile(destinationFile)
 
         val options = UCrop.Options().apply {
