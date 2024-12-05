@@ -13,7 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.agricurify.databinding.ActivityMainBinding
-import com.example.agricurify.ui.ImageDetector.ImageDetectorActivity
+import com.example.agricurify.ui.imageDetector.ImageDetectorActivity
 
 class MainActivity : AppCompatActivity() {
 
