@@ -50,6 +50,7 @@ class ResultActivity : AppCompatActivity() {
         binding.tvTreatment.text = treatmentText.toString()
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d("ResultActivity", "Destroyed")
