@@ -35,6 +35,6 @@
     <string name="logout">Logout</string>
     <string name="crop_image">Crop Image</string>
     <string name="crop_error_message">Crop failed: %1$s</string>
-    <string name="empty_image_warning">Please select an image first.</string>
+    <string name="empty_image_warning">Silahkan pilih gambar terlebih dahulu</string>
 
 </resources>
