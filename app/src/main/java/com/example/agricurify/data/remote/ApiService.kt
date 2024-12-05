@@ -18,8 +18,14 @@ interface ApiService {
     ): WeatherResponse
 
     @Multipart
-    @POST("predict/grape")
+    @POST("predict/apple")
     suspend fun uploadAppleImage(
+        @Part file :MultipartBody.Part
+    ) : ModelResponse
+
+    @Multipart
+    @POST("predict/grape")
+    suspend fun uploadGrapeImage(
         @Part file :MultipartBody.Part
     ) : ModelResponse
 }
