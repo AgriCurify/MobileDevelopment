@@ -39,5 +39,6 @@
     <string name="default_file_name">Image</string>
     <string name="upload_error_message">Gagal mengupload gambar</string>
     <string name="select_item_warning">Pilih jenis buah terlebih dahulu</string>
+    <string name="downloading_model_fail">Model gagal diunduh</string>
 
 </resources>
