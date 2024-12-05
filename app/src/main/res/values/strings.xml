@@ -36,5 +36,6 @@
     <string name="crop_image">Crop gambar</string>
     <string name="crop_error_message">Crop gagal: %1$s</string>
     <string name="empty_image_warning">Silahkan pilih gambar terlebih dahulu</string>
+    <string name="default_file_name">Image\n</string>
 
 </resources>
