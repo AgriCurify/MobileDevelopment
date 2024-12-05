@@ -82,7 +82,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:scaleType="centerCrop"
-        android:background="@drawable/rounded_preview_image"
+        android:foreground="@drawable/rounded_preview_image"
         android:contentDescription="Preview Gambar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.5"
