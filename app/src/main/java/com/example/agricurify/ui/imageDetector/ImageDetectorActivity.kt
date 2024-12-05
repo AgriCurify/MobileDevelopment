@@ -3,7 +3,6 @@ package com.example.agricurify.ui.imageDetector
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -32,6 +31,7 @@ class ImageDetectorActivity : AppCompatActivity() {
     }
 
     private var currentImageUri: Uri? = null
+    private var croppedFileName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,33 +39,24 @@ class ImageDetectorActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
-
+        binding.btnBack.setOnClickListener { finish() }
         binding.clipButton.setOnClickListener { startGallery() }
         binding.cameraButton.setOnClickListener { startCamera() }
         binding.btnScan.setOnClickListener {
-            lifecycleScope.launch {
-                uploadImage()
-            }
+            lifecycleScope.launch { uploadImage() }
         }
 
         viewModel.isLoading.observe(this) {
             showLoading(it)
         }
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(IMAGE_KEY, currentImageUri)
-    }
-
-    @Suppress("DEPRECATION")
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        currentImageUri = savedInstanceState.getParcelable(IMAGE_KEY)
-        showImage()
+        // Observasi nama file dan gambar preview
+        viewModel.croppedFileName.observe(this) { fileName ->
+            binding.tvPreview.text = fileName ?: getString(R.string.default_file_name)
+        }
+        viewModel.croppedImageUri.observe(this) { uri ->
+            binding.previewImageView.setImageURI(uri)
+        }
     }
 
     private fun uploadImage() {
@@ -77,10 +68,7 @@ class ImageDetectorActivity : AppCompatActivity() {
 
                 viewModel.uploadAppleImage(imageFile)
                 viewModel.modelData.observe(this) { response ->
-                    response?.let {
-                        Log.d("ImageDetector", "Response: $response")
-                        moveToResultActivity(it)
-                    }
+                    response?.let { moveToResultActivity(it) }
                     showLoading(false)
                 }
             } catch (e: Exception) {
@@ -102,18 +90,14 @@ class ImageDetectorActivity : AppCompatActivity() {
     private fun startCamera() {
         val file = File(cacheDir, "IMG_${System.currentTimeMillis()}.jpg")
         currentImageUri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
-
         launcherIntentCamera.launch(currentImageUri!!)
     }
-
 
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { isSuccess ->
         if (isSuccess) {
-            currentImageUri?.let { uri ->
-                startCrop(uri)
-            }
+            currentImageUri?.let { uri -> startCrop(uri) }
         } else {
             currentImageUri = null
         }
@@ -124,6 +108,7 @@ class ImageDetectorActivity : AppCompatActivity() {
             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
         )
     }
+
     private val launchGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -136,7 +121,8 @@ class ImageDetectorActivity : AppCompatActivity() {
     }
 
     private fun startCrop(uri: Uri) {
-        val destinationUri = Uri.fromFile(File(cacheDir, "IMG_${System.currentTimeMillis()}.jpg"))
+        val destinationFile = File(cacheDir, "CROP_${System.currentTimeMillis()}.jpg")
+        val destinationUri = Uri.fromFile(destinationFile)
 
         val options = UCrop.Options().apply {
             setCompressionQuality(80)
@@ -152,6 +138,8 @@ class ImageDetectorActivity : AppCompatActivity() {
             .withAspectRatio(1f, 1f)
             .withOptions(options)
             .start(this)
+
+        croppedFileName = destinationFile.name
     }
 
     @Deprecated("This method has been deprecated")
@@ -161,8 +149,8 @@ class ImageDetectorActivity : AppCompatActivity() {
             val resultUri = UCrop.getOutput(data!!)
             if (resultUri != null) {
                 currentImageUri = resultUri
-                showImage()
-                binding.tvPreview.text = getFileNameFromUri(resultUri)
+                viewModel.setCroppedFileName(croppedFileName ?: "Unknown")
+                viewModel.setCroppedImageUri(resultUri)
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             val cropError = UCrop.getError(data!!)
@@ -170,31 +158,8 @@ class ImageDetectorActivity : AppCompatActivity() {
         }
     }
 
-    private fun getFileNameFromUri(uri: Uri): String {
-        var fileName = ""
-        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (nameIndex >= 0) {
-                    fileName = cursor.getString(nameIndex)
-                }
-            }
-        }
-        if (fileName.isEmpty()) {
-            fileName = uri.lastPathSegment ?: "Unknown"
-        }
-        return fileName
-    }
-
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showImage() {
-        currentImageUri?.let {
-            Log.d("Image Uri", "ShowImage: $it")
-            binding.previewImageView.setImageURI(it)
-        }
     }
 
     private fun showLoading(isLoading: Boolean) {
