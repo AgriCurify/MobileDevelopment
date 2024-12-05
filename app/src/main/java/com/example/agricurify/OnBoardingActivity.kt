@@ -1,11 +1,9 @@
 package com.example.agricurify
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-
 
 class OnBoardingActivity : AppCompatActivity() {
 

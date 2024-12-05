@@ -36,7 +36,7 @@
             android:background="@color/satu"
             android:backgroundTint="@color/satu"
             app:contentInsetStart="0dp"
-            app:fabCradleMargin="16dp"
+            app:fabCradleMargin="10dp"
             app:fabCradleRoundedCornerRadius="36dp">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -44,8 +44,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 app:elevation="0dp"
                 app:menu="@menu/bottom_nav_menu" />
 
