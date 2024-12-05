@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +28,7 @@ import java.io.File
 
 class ImageDetectorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityImageDetectorBinding
+    private var selectedFruit: String? = null
     private val viewModel by viewModels<MainViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -39,11 +42,25 @@ class ImageDetectorActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
+        val items = listOf("Apple", "Anggur")
+        val adapter = ArrayAdapter(this, R.layout.item_list, items)
+
+        binding.autoComplete.setAdapter(adapter)
+        binding.autoComplete.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            selectedFruit = parent.getItemAtPosition(position).toString()
+        }
+
         binding.btnBack.setOnClickListener { finish() }
         binding.clipButton.setOnClickListener { startGallery() }
         binding.cameraButton.setOnClickListener { startCamera() }
         binding.btnScan.setOnClickListener {
-            lifecycleScope.launch { uploadImage() }
+            lifecycleScope.launch {
+                when (selectedFruit) {
+                    "Apple" -> uploadAppleImage()
+                    "Anggur" -> uploadGrapeImage()
+                    else -> showToast(getString(R.string.select_item_warning))
+                }
+            }
         }
 
         viewModel.isLoading.observe(this) {
@@ -57,9 +74,10 @@ class ImageDetectorActivity : AppCompatActivity() {
         viewModel.croppedImageUri.observe(this) { uri ->
             binding.previewImageView.setImageURI(uri)
         }
+
     }
 
-    private fun uploadImage() {
+    private fun uploadAppleImage() {
         currentImageUri?.let { uri ->
             try {
                 val imageFile = uriToFile(uri, this).reduceFileImage()
@@ -73,18 +91,51 @@ class ImageDetectorActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 Log.e("Upload Error", "Error preparing file for upload: ${e.message}")
+                viewModel.errorMessage.observe(this) { errorMessage ->
+                    showToast(errorMessage ?: getString(R.string.upload_error_message))
+
+                }
             } finally {
                 showLoading(false)
             }
         } ?: showToast(getString(R.string.empty_image_warning))
     }
 
+    private fun uploadGrapeImage() {
+        currentImageUri?.let { uri ->
+            try {
+                val imageFile = uriToFile(uri, this).reduceFileImage()
+                Log.d("Image File Path", "File Path: ${imageFile.path}, Exists: ${imageFile.exists()}")
+                showLoading(true)
+
+                viewModel.uploadGrapeImage(imageFile)
+                viewModel.modelData.observe(this) { response ->
+                    response?.let { moveToResultActivity(it) }
+                    showLoading(false)
+                }
+            } catch (e: Exception) {
+                Log.e("Upload Error", "Error preparing file for upload: ${e.message}")
+                viewModel.errorMessage.observe(this) { errorMessage ->
+                    showToast(errorMessage ?: getString(R.string.upload_error_message))
+
+                }
+            } finally {
+                showLoading(false)
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
+    }
+
+
+
     private fun moveToResultActivity(response: ModelResponse) {
         val intent = Intent(this, ResultActivity::class.java).apply {
             putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
             putExtra(ResultActivity.EXTRA_MODEL_RESPONSE, response)
+            // Tambahkan flag untuk mengatur stack activity
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         }
         startActivity(intent)
+        finish()
     }
 
     private fun startCamera() {
