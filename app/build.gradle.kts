@@ -83,4 +83,7 @@ dependencies {
     //Ucrop
     implementation(libs.ucrop)
 
+    // library mlkit
+    implementation(libs.translate)
+
 }
