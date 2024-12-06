@@ -42,7 +42,7 @@ class ImageDetectorActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        val items = listOf("Apel", "Anggur")
+        val items = listOf("Apel", "Anggur", "Tomat")
         val adapter = ArrayAdapter(this, R.layout.item_list, items)
 
         binding.autoComplete.setAdapter(adapter)
@@ -58,6 +58,7 @@ class ImageDetectorActivity : AppCompatActivity() {
                 when (selectedFruit) {
                     "Apel" -> uploadAppleImage()
                     "Anggur" -> uploadGrapeImage()
+                    "Tomat" -> uploadTomatoImage()
                     else -> showToast(getString(R.string.select_item_warning))
                 }
             }
@@ -108,6 +109,30 @@ class ImageDetectorActivity : AppCompatActivity() {
                 showLoading(true)
 
                 viewModel.uploadGrapeImage(imageFile)
+                viewModel.modelData.observe(this) { response ->
+                    response?.let { moveToResultActivity(it) }
+                    showLoading(false)
+                }
+            } catch (e: Exception) {
+                Log.e("Upload Error", "Error preparing file for upload: ${e.message}")
+                viewModel.errorMessage.observe(this) { errorMessage ->
+                    showToast(errorMessage ?: getString(R.string.upload_error_message))
+
+                }
+            } finally {
+                showLoading(false)
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
+    }
+
+    private fun uploadTomatoImage() {
+        currentImageUri?.let { uri ->
+            try {
+                val imageFile = uriToFile(uri, this).reduceFileImage()
+                Log.d("Image File Path", "File Path: ${imageFile.path}, Exists: ${imageFile.exists()}")
+                showLoading(true)
+
+                viewModel.uploadTomatoImage(imageFile)
                 viewModel.modelData.observe(this) { response ->
                     response?.let { moveToResultActivity(it) }
                     showLoading(false)

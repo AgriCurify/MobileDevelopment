@@ -28,4 +28,11 @@ interface ApiService {
     suspend fun uploadGrapeImage(
         @Part file :MultipartBody.Part
     ) : ModelResponse
+
+    @Multipart
+    @POST("predict/tomato")
+    suspend fun uploadTomatoImage(
+        @Part file :MultipartBody.Part
+    ) : ModelResponse
+
 }
