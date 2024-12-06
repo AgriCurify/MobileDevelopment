@@ -2,6 +2,7 @@ package com.example.agricurify.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,9 +14,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.agricurify.adapter.HistoryAdapter
+import com.example.agricurify.data.database.AppDatabase
 import com.example.agricurify.data.response.WeatherResponse
 import com.example.agricurify.databinding.FragmentHomeBinding
+import com.example.agricurify.ui.allhistory.AllHistoryActivity
+import com.example.agricurify.ui.detail.DetailHistoryActivity
 import com.example.agricurify.ui.viewmodel.MainViewModel
 import com.example.agricurify.ui.viewmodel.ViewModelFactory
 import com.example.agricurify.utils.formatDate
@@ -32,6 +38,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: HistoryAdapter
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -52,9 +59,7 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        return root
+        return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -62,11 +67,43 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupActionBar()
+        setupHistorySection()
+        setupWeatherSection()
+
+        binding.tvHistoryNav.setOnClickListener {
+            val intent = Intent(requireContext(), AllHistoryActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun setupActionBar() {
         (activity as AppCompatActivity?)?.supportActionBar?.apply {
-            setShowHideAnimationEnabled(false)
             hide()
         }
+    }
 
+    private fun setupHistorySection() {
+        val database = AppDatabase.getDatabase(requireContext())
+        val historyDao = database.historyDao()
+
+        adapter = HistoryAdapter { history ->
+            val intent = Intent(requireContext(), DetailHistoryActivity::class.java)
+            intent.putExtra(DetailHistoryActivity.EXTRA_HISTORY, history)
+            startActivity(intent)
+        }
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerView.adapter = adapter
+
+        // Observasi data dari database
+        historyDao.getAllHistories().observe(viewLifecycleOwner) { histories ->
+            adapter.submitList(histories)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupWeatherSection() {
         if (viewModel.weatherData.value == null) {
             requestPermissionLauncher.launch(
                 arrayOf(
@@ -84,7 +121,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner){
+        viewModel.isLoading.observe(viewLifecycleOwner) {
             showLoading(it)
         }
     }
@@ -92,7 +129,7 @@ class HomeFragment : Fragment() {
     @SuppressLint("SetTextI18n", "DefaultLocale")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCurrentWeather(weather: WeatherResponse) {
-        val currentDateTime = ZonedDateTime.now(ZoneId.systemDefault()) // Gunakan ZonedDateTime
+        val currentDateTime = ZonedDateTime.now(ZoneId.systemDefault())
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
         val matchWeather = weather.list.firstOrNull { forecast ->
@@ -103,26 +140,13 @@ class HomeFragment : Fragment() {
         }
 
         matchWeather?.let { forecast ->
-            val tempInKelvin = forecast.main.temp
-            val tempInCelcius = tempInKelvin - 273
+            val tempInCelcius = forecast.main.temp - 273
             binding.tvTemp.text = String.format("%d°C", tempInCelcius.toInt())
-
             binding.tvHumidity.text = "Kelembapan : ${forecast.main.humidity}%"
-            val iconCode = forecast.weather[0].icon
-            val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"
-            Glide.with(requireActivity())
-                .load(iconUrl)
-                .into(binding.imgCuaca)
-
-            val formattedDate = formatDate(forecast.dtTxt)
-            binding.tvdate.text = formattedDate
-
-            val city = weather.city.name
-            val countryCode = weather.city.country
-            val locale = Locale("", countryCode)
-            val countryName = locale.displayCountry
-
-            binding.tvLocation.text = "$city, $countryName"
+            val iconUrl = "https://openweathermap.org/img/w/${forecast.weather[0].icon}.png"
+            Glide.with(requireActivity()).load(iconUrl).into(binding.imgCuaca)
+            binding.tvdate.text = formatDate(forecast.dtTxt)
+            binding.tvLocation.text = "${weather.city.name}, ${Locale("", weather.city.country).displayCountry}"
         }
     }
 
@@ -146,21 +170,13 @@ class HomeFragment : Fragment() {
 
         indices.forEachIndexed { index, idx ->
             val weatherItem = weather.list[idx]
-            val tempInKelvin = weatherItem.main.temp
-            val tempInCelcius = tempInKelvin - 273
-
+            val tempInCelcius = weatherItem.main.temp - 273
             val (tempView, humidityView, imageView) = cardViews[index]
             tempView.text = String.format("%d°C", tempInCelcius.toInt())
             humidityView.text = "Kelembapan : ${weatherItem.main.humidity}%"
-
-            val iconCode = weatherItem.weather[0].icon
-            val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"
-            Glide.with(requireActivity())
-                .load(iconUrl)
-                .into(imageView)
-
-            val formatDate = formatDateInDay(weatherItem.dtTxt)
-            dateViews[index].text = formatDate
+            val iconUrl = "https://openweathermap.org/img/w/${weatherItem.weather[0].icon}.png"
+            Glide.with(requireActivity()).load(iconUrl).into(imageView)
+            dateViews[index].text = formatDateInDay(weatherItem.dtTxt)
         }
     }
 
