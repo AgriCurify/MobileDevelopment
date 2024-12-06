@@ -63,11 +63,11 @@ class AllHistoryActivity : AppCompatActivity() {
                 try {
                     historyDao.deleteAllHistories()
                     launch(Dispatchers.Main) {
-                        Toast.makeText(this@AllHistoryActivity, "All history deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AllHistoryActivity, "Semua riwayat dihapus", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     launch(Dispatchers.Main) {
-                        Toast.makeText(this@AllHistoryActivity, "Error deleting all history: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AllHistoryActivity, "Error menghapus semua riwayar: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
