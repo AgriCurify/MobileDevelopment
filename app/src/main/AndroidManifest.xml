@@ -17,6 +17,12 @@
         android:theme="@style/Theme.AgriCurify"
         tools:targetApi="31">
         <activity
+            android:name=".ui.allhistory.AllHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.detail.DetailHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
@@ -26,9 +32,6 @@
             tools:ignore="DiscouragedApi,MissingClass" />
         <activity
             android:name=".ui.result.ResultActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.detail.DetailActivity"
             android:exported="false" />
         <activity
             android:name=".ui.imageDetector.ImageDetectorActivity"
