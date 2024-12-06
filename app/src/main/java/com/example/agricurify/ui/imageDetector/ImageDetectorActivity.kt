@@ -42,11 +42,11 @@ class ImageDetectorActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        val items = listOf("Apple", "Anggur")
+        val items = listOf("Apel", "Anggur")
         val adapter = ArrayAdapter(this, R.layout.item_list, items)
 
         binding.autoComplete.setAdapter(adapter)
-        binding.autoComplete.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        binding.autoComplete.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             selectedFruit = parent.getItemAtPosition(position).toString()
         }
 
@@ -56,7 +56,7 @@ class ImageDetectorActivity : AppCompatActivity() {
         binding.btnScan.setOnClickListener {
             lifecycleScope.launch {
                 when (selectedFruit) {
-                    "Apple" -> uploadAppleImage()
+                    "Apel" -> uploadAppleImage()
                     "Anggur" -> uploadGrapeImage()
                     else -> showToast(getString(R.string.select_item_warning))
                 }
@@ -67,7 +67,6 @@ class ImageDetectorActivity : AppCompatActivity() {
             showLoading(it)
         }
 
-        // Observasi nama file dan gambar preview
         viewModel.croppedFileName.observe(this) { fileName ->
             binding.tvPreview.text = fileName ?: getString(R.string.default_file_name)
         }
@@ -124,8 +123,6 @@ class ImageDetectorActivity : AppCompatActivity() {
             }
         } ?: showToast(getString(R.string.empty_image_warning))
     }
-
-
 
     private fun moveToResultActivity(response: ModelResponse) {
         val intent = Intent(this, ResultActivity::class.java).apply {
@@ -215,9 +212,5 @@ class ImageDetectorActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    companion object {
-        private const val IMAGE_KEY = "currentImageUri"
     }
 }
