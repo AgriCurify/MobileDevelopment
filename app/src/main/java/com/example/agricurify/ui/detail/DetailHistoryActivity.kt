@@ -35,7 +35,7 @@ class DetailHistoryActivity : AppCompatActivity() {
             binding.tvName.text = it.diseaseName
             binding.tvDescription.text = it.description
             binding.tvScore.text = "Akurasi: ${it.confidence}%"
-            binding.tvTreatment.text = "Penanganan: ${it.treatments}"
+            displayTreatments(it.treatments)
             Glide.with(this).load(it.imageUri).into(binding.previewImageView)
         }
 
@@ -55,6 +55,15 @@ class DetailHistoryActivity : AppCompatActivity() {
                 deleteHistory(it)
             }
         }
+    }
+
+    private fun displayTreatments(treatments: String) {
+        val treatmentList = treatments.split("\n") // Misalkan data dipisahkan oleh newline.
+        val formattedText = StringBuilder()
+        treatmentList.forEachIndexed { index, treatment ->
+            formattedText.append("${index + 1}. $treatment\n")
+        }
+        binding.tvTreatment.text = formattedText.toString()
     }
 
     private fun translateContent(history: HistoryEntity) {
@@ -112,11 +121,10 @@ class DetailHistoryActivity : AppCompatActivity() {
     private fun deleteHistory(history: HistoryEntity) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // Delete the history entry from the database
                 database.historyDao().deleteHistory(history)
                 launch(Dispatchers.Main) {
                     showToast("Riwayat berhasil dihapus.")
-                    finish() // Close activity after deletion
+                    finish()
                 }
             } catch (e: Exception) {
                 launch(Dispatchers.Main) {
