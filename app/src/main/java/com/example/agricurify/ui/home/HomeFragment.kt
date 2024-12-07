@@ -71,6 +71,11 @@ class HomeFragment : Fragment() {
         setupHistorySection()
         setupWeatherSection()
 
+        // Handle refresh action
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            refreshWeatherData()
+        }
+
         binding.tvHistoryNav.setOnClickListener {
             val intent = Intent(requireContext(), AllHistoryActivity::class.java)
             startActivity(intent)
@@ -93,7 +98,8 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerView.adapter = adapter
 
         // Observasi data dari database
@@ -126,6 +132,22 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun refreshWeatherData() {
+        viewModel.getWeatherData()
+        viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
+            if (weather != null) {
+                updateCurrentWeather(weather)
+                updateForecastWeather(weather)
+            }
+            binding.swipeRefreshLayout.isRefreshing = false // Hentikan indikator refresh
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+        }
+    }
+
     @SuppressLint("SetTextI18n", "DefaultLocale")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCurrentWeather(weather: WeatherResponse) {
@@ -146,7 +168,8 @@ class HomeFragment : Fragment() {
             val iconUrl = "https://openweathermap.org/img/w/${forecast.weather[0].icon}.png"
             Glide.with(requireActivity()).load(iconUrl).into(binding.imgCuaca)
             binding.tvdate.text = formatDate(forecast.dtTxt)
-            binding.tvLocation.text = "${weather.city.name}, ${Locale("", weather.city.country).displayCountry}"
+            binding.tvLocation.text =
+                "${weather.city.name}, ${Locale("", weather.city.country).displayCountry}"
         }
     }
 
