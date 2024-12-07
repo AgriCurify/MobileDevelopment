@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
         setupActionBar()
         setupHistorySection()
         setupWeatherSection()
-        
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             refreshWeatherData()
         }
@@ -102,7 +102,7 @@ class HomeFragment : Fragment() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerView.adapter = adapter
-        
+
         historyDao.getAllHistories().observe(viewLifecycleOwner) { histories ->
             adapter.submitList(histories)
         }
@@ -116,7 +116,7 @@ class HomeFragment : Fragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         )
-        
+
         viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
             if (weather != null) {
                 updateCurrentWeather(weather)
@@ -124,21 +124,21 @@ class HomeFragment : Fragment() {
             }
             binding.swipeRefreshLayout.isRefreshing = false
         }
-        
+
         viewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
+            showLoading()
             if (!it) {
                 binding.swipeRefreshLayout.isRefreshing = false // Hentikan refresh saat selesai
             }
         }
-        
+
         if (isLocationPermissionGranted()) {
             viewModel.getWeatherData()
         } else {
             showLocationPermissionDenied()
         }
     }
-    
+
     private fun isLocationPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
@@ -149,7 +149,7 @@ class HomeFragment : Fragment() {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
     }
-    
+
     private fun showLocationPermissionDenied() {
         Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
     }
@@ -215,10 +215,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        binding.cardView.visibility = if (isLoading) View.GONE else View.VISIBLE
-        binding.cardForecast.visibility = if (isLoading) View.GONE else View.VISIBLE
+    private fun showLoading() {
+        binding.cardView.visibility = View.VISIBLE
+        binding.cardForecast.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
