@@ -96,7 +96,6 @@ class ResultActivity : AppCompatActivity() {
         val translator = Translation.getClient(options)
 
         val conditions = DownloadConditions.Builder()
-            .requireWifi()
             .build()
 
         translator.downloadModelIfNeeded(conditions)
