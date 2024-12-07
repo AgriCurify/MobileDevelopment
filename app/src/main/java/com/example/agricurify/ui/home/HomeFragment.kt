@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -110,31 +111,6 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupWeatherSection() {
-        if (viewModel.weatherData.value == null) {
-            requestPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-            viewModel.getWeatherData()
-        }
-
-        viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
-            if (weather != null) {
-                updateCurrentWeather(weather)
-                updateForecastWeather(weather)
-            }
-        }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun refreshWeatherData() {
-        viewModel.getWeatherData()
         viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
             if (weather != null) {
                 updateCurrentWeather(weather)
@@ -146,6 +122,20 @@ class HomeFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) {
             showLoading(it)
         }
+
+        requestPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+        viewModel.getWeatherData()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun refreshWeatherData() {
+        binding.swipeRefreshLayout.isRefreshing = true
+        viewModel.getWeatherData()
     }
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
