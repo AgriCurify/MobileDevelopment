@@ -3,6 +3,7 @@ package com.example.agricurify.ui.home
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,8 +72,7 @@ class HomeFragment : Fragment() {
         setupActionBar()
         setupHistorySection()
         setupWeatherSection()
-
-        // Handle refresh action
+        
         binding.swipeRefreshLayout.setOnRefreshListener {
             refreshWeatherData()
         }
@@ -101,8 +102,7 @@ class HomeFragment : Fragment() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerView.adapter = adapter
-
-        // Observasi data dari database
+        
         historyDao.getAllHistories().observe(viewLifecycleOwner) { histories ->
             adapter.submitList(histories)
         }
@@ -110,25 +110,48 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupWeatherSection() {
-        viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
-            if (weather != null) {
-                updateCurrentWeather(weather)
-                updateForecastWeather(weather)
-            }
-            binding.swipeRefreshLayout.isRefreshing = false // Hentikan indikator refresh
-        }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-
         requestPermissionLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         )
-        viewModel.getWeatherData()
+        
+        viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
+            if (weather != null) {
+                updateCurrentWeather(weather)
+                updateForecastWeather(weather)
+            }
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+        
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+            if (!it) {
+                binding.swipeRefreshLayout.isRefreshing = false // Hentikan refresh saat selesai
+            }
+        }
+        
+        if (isLocationPermissionGranted()) {
+            viewModel.getWeatherData()
+        } else {
+            showLocationPermissionDenied()
+        }
+    }
+    
+    private fun isLocationPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+    
+    private fun showLocationPermissionDenied() {
+        Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
