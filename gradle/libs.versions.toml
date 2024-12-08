@@ -28,8 +28,10 @@ glide = "4.16.0"
 translate = "17.0.3"
 ucrop = "2.2.8"
 swiperefreshlayout = "1.1.0"
+datastorePreferences = "1.1.1"
 
 [libraries]
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
