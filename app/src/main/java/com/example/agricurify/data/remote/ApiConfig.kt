@@ -40,7 +40,28 @@ object ApiConfig {
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://agricurify-c242-ps224.et.r.appspot.com/")
+            .baseUrl("https://modelapi-dot-agricurify-c242-ps224.et.r.appspot.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+        return retrofit.create(ApiService::class.java)
+    }
+
+    fun authentication(): ApiService{
+        val loggingInterceptor =
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            } else {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+            }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://authapi-dot-agricurify-c242-ps224.et.r.appspot.com")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
