@@ -45,7 +45,7 @@
     <string name="logo_app">logo app</string>
     <string name="history">History</string>
     <string name="history_kosong">History Kosong</string>
-    <string name="penaganan_penyakit">Penaganan Penyakit :</string>
+    <string name="penaganan_penyakit">Penanganan Penyakit :</string>
     <string name="preview_gambar">Preview Gambar</string>
     <string name="textview">TextView</string>
     <string name="translate">Translate</string>
@@ -59,5 +59,6 @@
     <string name="suhu">31°C</string>
     <string name="kelembapan">Kelembapan: 70%</string>
     <string name="hari">Senin</string>
+    <string name="empty_warning">Field ini tidak boleh kosong</string>
 
 </resources>
