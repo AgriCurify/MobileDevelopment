@@ -21,6 +21,7 @@ android {
         buildConfigField("String", "API_KEY", "\"a1d91f746849c525b26c14cf44cd7a6f\"")
 
 
+
     }
 
     buildTypes {
@@ -92,5 +93,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
 
 }
