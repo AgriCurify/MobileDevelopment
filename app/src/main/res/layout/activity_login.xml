@@ -144,7 +144,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/signupButton"
+        android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -169,12 +169,12 @@
         android:text="@string/Blum_punya_akun"
         android:textColor="@color/white"
         android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView9"
-        app:layout_constraintStart_toStartOf="@+id/signupButton"
-        app:layout_constraintTop_toBottomOf="@+id/signupButton" />
+        app:layout_constraintEnd_toStartOf="@+id/tvSignUp"
+        app:layout_constraintStart_toStartOf="@+id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/tvSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -185,7 +185,19 @@
         android:textColor="@color/orange"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/noAkun"
-        app:layout_constraintEnd_toEndOf="@+id/signupButton"
-        app:layout_constraintTop_toBottomOf="@+id/signupButton" />
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
