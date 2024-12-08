@@ -12,9 +12,10 @@ import com.example.agricurify.ui.viewmodel.MainViewModel
 import com.example.agricurify.ui.viewmodel.ViewModelFactory
 import com.example.agricurify.utils.ResultState
 import kotlinx.coroutines.launch
+import androidx.activity.OnBackPressedCallback
 
 class RegisterActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityRegisterBinding
+    private lateinit var binding: ActivityRegisterBinding
 
     private val viewModel by viewModels<MainViewModel> {
         ViewModelFactory.getInstance(this)
@@ -31,6 +32,14 @@ class RegisterActivity : AppCompatActivity() {
                 register()
             }
         }
+        
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        })
     }
 
     private suspend fun register() {
@@ -49,9 +58,9 @@ class RegisterActivity : AppCompatActivity() {
                 binding.edRegisterPassword.error = getString(R.string.empty_warning)
             }
             else -> {
-                viewModel.register(name, email, password).observe(this){result ->
+                viewModel.register(name, email, password).observe(this) { result ->
                     if (result != null) {
-                        when(result){
+                        when (result) {
                             is ResultState.Loading -> {
                                 showLoading()
                             }
