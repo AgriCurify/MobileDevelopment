@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.agricurify.data.preference.Preference
 import com.example.agricurify.data.repository.MainRepository
 import com.example.agricurify.data.response.ModelResponse
 import com.example.agricurify.data.response.WeatherResponse
@@ -13,12 +14,18 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.File
 
-class MainViewModel(private val repository: MainRepository) : ViewModel() {
+class MainViewModel(private val repository: MainRepository, private val userPreference: Preference) : ViewModel() {
     private val _weatherData = MutableLiveData<WeatherResponse?>(null)
     val weatherData: LiveData<WeatherResponse?> = _weatherData
 
     private val _modelData = MutableLiveData<ModelResponse?>(null)
     val modelData: LiveData<ModelResponse?> = _modelData
+
+    private val _registerMessage = MutableLiveData<String>()
+    val registerMessage: LiveData<String> get() = _registerMessage
+
+    private val _loginMessage = MutableLiveData<String>()
+    val loginMessage: LiveData<String> get() = _loginMessage
 
     private val _croppedFileName = MutableLiveData<String>()
     val croppedFileName: LiveData<String> = _croppedFileName
@@ -108,4 +115,13 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
             }
         }
     }
+
+
+    suspend fun register(name: String, email: String, password: String) = repository.register(name, email, password)
+
+    suspend fun login(email: String, password: String) = repository.login(email, password)
+
+    fun getToken() = userPreference.getToken()
+
+
 }
