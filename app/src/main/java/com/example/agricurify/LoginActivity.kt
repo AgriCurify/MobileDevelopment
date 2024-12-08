@@ -22,20 +22,38 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        supportActionBar?.hide()
 
-        binding.apply {
-            tvSignUp.setOnClickListener {
-                navigateToRegister()
-            }
-            btnLogin.setOnClickListener {
-                lifecycleScope.launch {
-                    login()
+        // Cek apakah ini pertama kali aplikasi dibuka
+        val preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        val isFirstRun = preferences.getBoolean("isFirstRun", true)
+
+        if (isFirstRun) {
+            // Jika pertama kali, tampilkan OnboardingActivity
+            val intent = Intent(this, OnBoardingActivity::class.java)
+            startActivity(intent)
+            finish()  // Tutup LoginActivity
+        } else {
+            // Jika bukan pertama kali, lanjutkan ke LoginActivity
+            binding = ActivityLoginBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+            supportActionBar?.hide()
+
+            binding.apply {
+                tvSignUp.setOnClickListener {
+                    navigateToRegister()
+                }
+                btnLogin.setOnClickListener {
+                    lifecycleScope.launch {
+                        login()
+                    }
                 }
             }
         }
+
+        // Set flag supaya Onboarding tidak muncul lagi di masa depan
+        val editor = preferences.edit()
+        editor.putBoolean("isFirstRun", false)
+        editor.apply()
     }
 
     private suspend fun login() {
@@ -50,9 +68,9 @@ class LoginActivity : AppCompatActivity() {
                 binding.edRegisterPassword.error = getString(R.string.empty_warning)
             }
             else -> {
-                viewModel.login(email, password).observe(this){result ->
+                viewModel.login(email, password).observe(this) { result ->
                     if (result != null) {
-                        when(result){
+                        when (result) {
                             is ResultState.Loading -> {
                                 showLoading()
                             }
@@ -85,8 +103,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this,message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
     private fun showLoading() {
         binding.progressBar.visibility = View.VISIBLE
     }
