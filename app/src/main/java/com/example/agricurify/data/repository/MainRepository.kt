@@ -6,10 +6,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.http.HttpException
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.liveData
 import com.example.agricurify.BuildConfig
+import com.example.agricurify.data.preference.Preference
 import com.example.agricurify.data.remote.ApiService
+import com.example.agricurify.data.response.LoginModel
+import com.example.agricurify.data.response.LoginRequest
 import com.example.agricurify.data.response.ModelResponse
+import com.example.agricurify.data.response.RegisterRequest
 import com.example.agricurify.data.response.WeatherResponse
+import com.example.agricurify.utils.ResultState
 import com.example.agricurify.utils.await
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -23,6 +29,8 @@ class MainRepository private constructor(
     private val apiService: ApiService,
     private val context: Context,
     private val apiServiceDetection: ApiService,
+    private val apiAuthentication: ApiService,
+    private val userPreference: Preference
 ) {
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
@@ -110,13 +118,41 @@ class MainRepository private constructor(
         }
     }
 
+    suspend fun register (name: String, email: String, password: String) = liveData {
+        emit(ResultState.Loading)
+        try {
+            val request = RegisterRequest(name, email, password)
+            val response = apiAuthentication.register(request)
+            emit(ResultState.Success(response))
+        } catch (e: Exception) {
+            emit(ResultState.Error(e.message.toString()))
+        }
+
+    }
+
+    suspend fun login (email: String, password: String) = liveData {
+        emit(ResultState.Loading)
+        try {
+            val request = LoginRequest(email, password)
+            val response = apiAuthentication.login(request)
+            val loginModel = LoginModel(
+                token = response.token
+            )
+            userPreference.saveToken(loginModel)
+            emit(ResultState.Success(response))
+        } catch (e: Exception) {
+            emit(ResultState.Error(e.message.toString()))
+        }
+
+    }
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         @Volatile
         private var instance: MainRepository? = null
-        fun getInstance(apiService: ApiService, context: Context, apiServiceDetection: ApiService) =
+        fun getInstance(apiService: ApiService, context: Context, apiServiceDetection: ApiService, apiAuthentication: ApiService, pref: Preference) =
             instance ?: synchronized(this) {
-                instance ?: MainRepository(apiService, context, apiServiceDetection )
+                instance ?: MainRepository(apiService, context, apiServiceDetection, apiAuthentication, pref )
             }.also { instance = it }
     }
 }
