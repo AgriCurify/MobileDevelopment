@@ -21,6 +21,7 @@ import com.example.agricurify.data.preference.Preference
 import com.example.agricurify.data.preference.dataStore
 import com.example.agricurify.data.remote.ApiConfig
 import com.example.agricurify.databinding.FragmentProfileBinding
+import com.example.agricurify.ui.changepassword.ChangePasswordActivity
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -59,6 +60,7 @@ class ProfileFragment : Fragment() {
         setupUpdateButton()
         setupImagePickerButton()
         setupFabEditButton()
+        setupChangePasswordAction()
     }
 
     private fun loadProfileData() {
@@ -240,6 +242,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun setupChangePasswordAction() {
+        binding.changePasswordTextView.setOnClickListener {
+            val intent = Intent(requireContext(), ChangePasswordActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
     @Suppress("DEPRECATION")
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -297,7 +306,6 @@ class ProfileFragment : Fragment() {
             .withOptions(options)
             .start(requireContext(), this)
     }
-
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
