@@ -67,6 +67,9 @@ class ProfileFragment : Fragment() {
         val context = requireContext()
         val preference = Preference.getInstance(context.dataStore)
 
+        // Show the progress bar when loading data
+        binding.progressBar.visibility = View.VISIBLE
+
         lifecycleScope.launch {
             try {
                 val token = preference.getToken().first()
@@ -86,9 +89,13 @@ class ProfileFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 Toast.makeText(context, "Failed to load profile data: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                // Hide the progress bar once the loading process is complete (success or failure)
+                binding.progressBar.visibility = View.GONE
             }
         }
     }
+
 
     private fun setupLogoutButton() {
         binding.logoutButton.setOnClickListener {
@@ -279,8 +286,6 @@ class ProfileFragment : Fragment() {
                             .load(croppedImageUri)
                             .into(binding.imageView4)
                     }
-
-                    uploadProfileImageWithToken()
                 }
             }
         }
