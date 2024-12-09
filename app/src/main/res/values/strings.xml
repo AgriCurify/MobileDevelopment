@@ -60,5 +60,9 @@
     <string name="kelembapan">Kelembapan: 70%</string>
     <string name="hari">Senin</string>
     <string name="empty_warning">Field ini tidak boleh kosong</string>
-
+    <string name="save">Simpan</string>
+    <string name="password_confirm">Konfirmasi Password</string>
+    <string name="new_pass">Password Baru</string>
+    <string name="old_pass">Password Lama</string>
+    <string name="change_pass">Ubah Password</string>
 </resources>
