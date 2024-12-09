@@ -219,5 +219,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/updateButton" />
 
+        <TextView
+            android:id="@+id/changePasswordTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Ubah Password"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:fontFamily="@font/poppinsregular"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logoutButton"
+            app:layout_constraintHorizontal_bias="0.5" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
