@@ -1,5 +1,6 @@
 package com.example.agricurify
 
+import androidx.activity.OnBackPressedCallback
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,7 +13,6 @@ import com.example.agricurify.ui.viewmodel.MainViewModel
 import com.example.agricurify.ui.viewmodel.ViewModelFactory
 import com.example.agricurify.utils.ResultState
 import kotlinx.coroutines.launch
-import androidx.activity.OnBackPressedCallback
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -32,12 +32,14 @@ class RegisterActivity : AppCompatActivity() {
                 register()
             }
         }
-        
+
+        binding.tvLogin.setOnClickListener {
+            navigateToLogin()
+        }
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
+                navigateToLogin()
             }
         })
     }
@@ -66,7 +68,7 @@ class RegisterActivity : AppCompatActivity() {
                             }
                             is ResultState.Success -> {
                                 binding.progressBar.visibility = View.GONE
-                                loginNavigation()
+                                navigateToLogin()
                                 showToast(result.data.message)
                             }
                             is ResultState.Error -> {
@@ -80,7 +82,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun loginNavigation() {
+    private fun navigateToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
