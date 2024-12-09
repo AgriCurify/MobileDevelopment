@@ -1,5 +1,7 @@
 package com.example.agricurify.data.remote
 
+import com.example.agricurify.data.response.ChangePasswordRequest
+import com.example.agricurify.data.response.ChangePasswordResponse
 import com.example.agricurify.data.response.LoginRequest
 import com.example.agricurify.data.response.LoginResponse
 import com.example.agricurify.data.response.LogoutResponse
@@ -70,4 +72,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body updateRequest: Map<String, String>
     ): Response<UserProfileResponse>
+
+    @PUT("users/changePassword")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body request: ChangePasswordRequest
+    ): Response<ChangePasswordResponse>
 }
