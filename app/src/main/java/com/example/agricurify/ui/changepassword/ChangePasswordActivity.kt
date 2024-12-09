@@ -49,13 +49,17 @@ class ChangePasswordActivity : AppCompatActivity() {
     private fun changePassword(oldPassword: String, newPassword: String, confirmPassword: String) {
         val apiService = ApiConfig.authentication()
 
+        binding.progressBar.visibility = android.view.View.VISIBLE
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val token = getToken() // Ambil token dari DataStore
+                val token = getToken()
                 val request = ChangePasswordRequest(oldPassword, newPassword, confirmPassword)
                 val response = apiService.changePassword("Bearer $token", request)
 
                 withContext(Dispatchers.Main) {
+                    binding.progressBar.visibility = android.view.View.GONE
+
                     if (response.isSuccessful) {
                         val message = response.body()?.message ?: "Password berhasil diubah"
                         Toast.makeText(this@ChangePasswordActivity, message, Toast.LENGTH_SHORT).show()
@@ -70,6 +74,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    binding.progressBar.visibility = android.view.View.GONE
                     Toast.makeText(
                         this@ChangePasswordActivity,
                         "Terjadi kesalahan: ${e.message}",
