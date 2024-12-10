@@ -71,7 +71,9 @@
                         android:src="@drawable/logo_round"
                         app:shapeAppearanceOverlay="@style/imageViewCircle" />
                 </FrameLayout>
+                
             </com.google.android.material.appbar.MaterialToolbar>
+            
         </com.google.android.material.appbar.AppBarLayout>
 
         <FrameLayout
@@ -186,8 +188,6 @@
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-
         <Button
             android:id="@+id/updateButton"
             android:layout_width="0dp"
@@ -224,7 +224,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Ubah Password"
+            android:text="@string/change_pass"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:fontFamily="@font/poppinsregular"
@@ -246,4 +246,5 @@
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    
 </androidx.core.widget.NestedScrollView>
