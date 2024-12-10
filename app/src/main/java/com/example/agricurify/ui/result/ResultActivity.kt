@@ -107,13 +107,13 @@ class ResultActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.GONE
                     }
                     .addOnFailureListener { exception ->
-                        showToast("Translation failed: ${exception.message}")
+                        showToast("Terjemahan gagal: ${exception.message}")
                         translator.close()
                         binding.progressBar.visibility = View.GONE
                     }
             }
             .addOnFailureListener { exception ->
-                showToast("Model download failed: ${exception.message}")
+                showToast("Unduhan model gagal: ${exception.message}")
                 translator.close()
                 binding.progressBar.visibility = View.GONE
             }
