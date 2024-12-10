@@ -54,6 +54,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="start|center_vertical"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/back_btn"
                     android:padding="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_back_arrow"
@@ -71,7 +72,9 @@
                     android:textSize="20sp" />
 
             </FrameLayout>
+            
         </com.google.android.material.appbar.MaterialToolbar>
+        
     </com.google.android.material.appbar.AppBarLayout>
 
     <ImageView
@@ -146,6 +149,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
