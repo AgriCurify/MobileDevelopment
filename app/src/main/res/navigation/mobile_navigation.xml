@@ -14,6 +14,6 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.agricurify.ui.profile.ProfileFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>
