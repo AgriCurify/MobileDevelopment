@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -107,22 +108,38 @@ class ProfileFragment : Fragment() {
     private fun setupLogoutButton() {
         binding.logoutButton.setOnClickListener {
             val context = requireContext()
-            val preference = Preference.getInstance(context.dataStore)
-
-            lifecycleScope.launch {
-                try {
-                    val token = preference.getToken().first()
-                    ApiConfig.authentication().logout("Bearer $token")
-                    preference.logout()
-
-                    val intent = Intent(context, SplashScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-
-                    Toast.makeText(context, "Berhasil keluar", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Gagal keluar: ${e.message}", Toast.LENGTH_SHORT).show()
+            
+            val dialogBuilder = AlertDialog.Builder(context)
+            dialogBuilder.setTitle("Konfirmasi Keluar")
+                .setMessage("Apakah Anda yakin ingin keluar?")
+                .setPositiveButton("Ya") { _, _ ->
+                    performLogout()
                 }
+                .setNegativeButton("Batal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+    }
+
+    private fun performLogout() {
+        val context = requireContext()
+        val preference = Preference.getInstance(context.dataStore)
+
+        lifecycleScope.launch {
+            try {
+                val token = preference.getToken().first()
+                ApiConfig.authentication().logout("Bearer $token")
+                preference.logout()
+
+                val intent = Intent(context, SplashScreenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+
+                Toast.makeText(context, "Berhasil keluar", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "Gagal keluar: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
