@@ -79,7 +79,7 @@ class HomeFragment : Fragment() {
         setupActionBar()
         setupHistorySection()
         setupWeatherSection()
-        loadUserProfile() // Tambahkan ini untuk memuat profil pengguna
+        loadUserProfile()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             refreshWeatherData()
@@ -159,7 +159,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showLocationPermissionDenied() {
-        Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Diperlukan izin lokasi", Toast.LENGTH_SHORT).show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -187,10 +187,10 @@ class HomeFragment : Fragment() {
                             .into(binding.fotoUser)
                     }
                 } else {
-                    Toast.makeText(context, "Token not found, please log in.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Akun tidak ditemukan, silakan masuk.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Failed to load user profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Gagal memuat profil pengguna: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
