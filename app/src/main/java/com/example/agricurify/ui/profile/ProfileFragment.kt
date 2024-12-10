@@ -91,13 +91,13 @@ class ProfileFragment : Fragment() {
                             .error(R.drawable.profile)
                             .into(binding.imageProfile)
                     } ?: run {
-                        Toast.makeText(context, "No user data found.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Tidak ada data pengguna yang ditemukan.", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "Token not found, please log in.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Akun tidak ditemukan, silakan masuk.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Failed to load profile data: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Gagal memuat data profil: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 binding.progressBar.visibility = View.GONE
             }
@@ -119,9 +119,9 @@ class ProfileFragment : Fragment() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
 
-                    Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Berhasil keluar", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(context, "Failed to log out: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Gagal keluar: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -133,12 +133,12 @@ class ProfileFragment : Fragment() {
             val email = binding.edRegisterEmail.text.toString()
 
             if (name == binding.edRegisterName.hint && email == binding.edRegisterEmail.hint && croppedImageUri == null) {
-                Toast.makeText(requireContext(), "No changes to update", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Tidak ada perubahan untuk diperbarui", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (name.isEmpty() && email.isEmpty() && croppedImageUri == null) {
-                Toast.makeText(requireContext(), "Please enter at least one field (name, email, or image).", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Harap masukkan setidaknya satu bidang (nama, email, atau gambar).", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -161,18 +161,18 @@ class ProfileFragment : Fragment() {
                         val response = ApiConfig.authentication().updateUserData("Bearer $token", updateRequest)
 
                         if (response.isSuccessful) {
-                            Toast.makeText(requireContext(), "User data updated successfully", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Data pengguna berhasil diperbarui", Toast.LENGTH_SHORT).show()
                             if (croppedImageUri != null) {
                                 uploadProfileImageWithToken()
                             } else {
                                 loadProfileData()
                             }
                         } else {
-                            Toast.makeText(requireContext(), "Failed to update user data", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Gagal memperbarui data pengguna", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Error updating profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Terjadi kesalahan saat memperbarui profil: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -215,7 +215,7 @@ class ProfileFragment : Fragment() {
 
                     val fileExtension = getFileExtension(compressedImageFile)
                     if (fileExtension != "jpg" && fileExtension != "jpeg" && fileExtension != "png") {
-                        Toast.makeText(requireContext(), "Invalid file type. Only JPG, JPEG, and PNG are allowed.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Jenis file tidak valid. Hanya JPG, JPEG, dan PNG yang diizinkan.", Toast.LENGTH_SHORT).show()
                         return@launch
                     }
 
@@ -225,16 +225,16 @@ class ProfileFragment : Fragment() {
                     val response = ApiConfig.authentication().updateProfileImage("Bearer $token", imagePart)
 
                     if (response.isSuccessful) {
-                        Toast.makeText(requireContext(), "Profile image updated successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Foto profil berhasil diperbarui", Toast.LENGTH_SHORT).show()
                         loadProfileData()
                     } else {
-                        Toast.makeText(requireContext(), "Failed to update profile image", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Gagal memperbarui foto profil", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Token or cropped image is missing", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Token atau gambar yang dipotong tidak ada", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error uploading profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Terjadi kesalahan saat mengunggah foto profil: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
