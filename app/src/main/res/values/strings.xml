@@ -13,7 +13,7 @@
     <string name="name">Nama Lengkap</string>
     <string name="email">Alamat Email</string>
     <string name="password">Password</string>
-    <string name="update">Update</string>
+    <string name="update">Perbarui</string>
     <string name="detail">Detail</string>
     <string name="diagnosis">Diagnosis</string>
     <string name="note">Note :</string>
@@ -30,7 +30,7 @@
     <string name="SignUp">Daftar</string>
     <string name="sdh_punya_akun">Sudah Punya Akun?</string>
     <string name="slmt">Selamat datang di AgriCurify! Silahkan lengkapi data dibawah ini!</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Keluar</string>
     <string name="crop_image">Crop gambar</string>
     <string name="crop_error_message">Crop gagal: %1$s</string>
     <string name="empty_image_warning">Silahkan pilih gambar terlebih dahulu</string>
