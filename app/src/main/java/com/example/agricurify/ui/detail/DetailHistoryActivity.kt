@@ -58,7 +58,7 @@ class DetailHistoryActivity : AppCompatActivity() {
     }
 
     private fun displayTreatments(treatments: String) {
-        val treatmentList = treatments.split("\n") // Misalkan data dipisahkan oleh newline.
+        val treatmentList = treatments.split("\n")
         val formattedText = StringBuilder()
         treatmentList.forEachIndexed { index, treatment ->
             formattedText.append("${index + 1}. $treatment\n")
@@ -105,13 +105,13 @@ class DetailHistoryActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.GONE
                     }
                     .addOnFailureListener { exception ->
-                        showToast("Translation failed: ${exception.message}")
+                        showToast("Terjemahan gagal: ${exception.message}")
                         translator.close()
                         binding.progressBar.visibility = View.GONE
                     }
             }
             .addOnFailureListener { exception ->
-                showToast("Model download failed: ${exception.message}")
+                showToast("Unduhan model gagal: ${exception.message}")
                 translator.close()
                 binding.progressBar.visibility = View.GONE
             }
