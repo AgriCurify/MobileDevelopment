@@ -67,7 +67,7 @@ class AllHistoryActivity : AppCompatActivity() {
                     }
                 } catch (e: Exception) {
                     launch(Dispatchers.Main) {
-                        Toast.makeText(this@AllHistoryActivity, "Error menghapus semua riwayar: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AllHistoryActivity, "Error menghapus semua riwayat: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
