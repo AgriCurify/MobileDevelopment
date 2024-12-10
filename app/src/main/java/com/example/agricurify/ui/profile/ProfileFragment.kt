@@ -67,7 +67,6 @@ class ProfileFragment : Fragment() {
         val context = requireContext()
         val preference = Preference.getInstance(context.dataStore)
 
-        // Show the progress bar when loading data
         binding.progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
@@ -80,9 +79,20 @@ class ProfileFragment : Fragment() {
                     response.data?.let { user ->
                         binding.edRegisterName.setText(user.name)
                         binding.edRegisterEmail.setText(user.email)
+
                         Glide.with(context)
                             .load(user.image)
+                            .placeholder(R.drawable.profile)
+                            .error(R.drawable.profile)
                             .into(binding.imageView4)
+
+                        Glide.with(context)
+                            .load(user.image)
+                            .placeholder(R.drawable.profile)
+                            .error(R.drawable.profile)
+                            .into(binding.imageProfile)
+                    } ?: run {
+                        Toast.makeText(context, "No user data found.", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(context, "Token not found, please log in.", Toast.LENGTH_SHORT).show()
@@ -90,12 +100,10 @@ class ProfileFragment : Fragment() {
             } catch (e: Exception) {
                 Toast.makeText(context, "Failed to load profile data: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
-                // Hide the progress bar once the loading process is complete (success or failure)
                 binding.progressBar.visibility = View.GONE
             }
         }
     }
-
 
     private fun setupLogoutButton() {
         binding.logoutButton.setOnClickListener {
