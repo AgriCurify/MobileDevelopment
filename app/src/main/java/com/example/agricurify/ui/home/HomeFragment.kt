@@ -16,10 +16,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.agricurify.R
 import com.example.agricurify.adapter.HistoryAdapter
 import com.example.agricurify.data.database.AppDatabase
+import com.example.agricurify.data.preference.Preference
+import com.example.agricurify.data.preference.dataStore
+import com.example.agricurify.data.remote.ApiConfig
 import com.example.agricurify.data.response.WeatherResponse
 import com.example.agricurify.databinding.FragmentHomeBinding
 import com.example.agricurify.ui.allhistory.AllHistoryActivity
@@ -28,6 +33,8 @@ import com.example.agricurify.ui.viewmodel.MainViewModel
 import com.example.agricurify.ui.viewmodel.ViewModelFactory
 import com.example.agricurify.utils.formatDate
 import com.example.agricurify.utils.formatDateInDay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -72,6 +79,7 @@ class HomeFragment : Fragment() {
         setupActionBar()
         setupHistorySection()
         setupWeatherSection()
+        loadUserProfile() // Tambahkan ini untuk memuat profil pengguna
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             refreshWeatherData()
@@ -128,7 +136,7 @@ class HomeFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) {
             showLoading()
             if (!it) {
-                binding.swipeRefreshLayout.isRefreshing = false // Hentikan refresh saat selesai
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         }
 
@@ -158,6 +166,33 @@ class HomeFragment : Fragment() {
     private fun refreshWeatherData() {
         binding.swipeRefreshLayout.isRefreshing = true
         viewModel.getWeatherData()
+    }
+
+    private fun loadUserProfile() {
+        val context = requireContext()
+        val preference = Preference.getInstance(context.dataStore)
+
+        lifecycleScope.launch {
+            try {
+                val token = preference.getToken().first()
+
+                if (token.isNotEmpty()) {
+                    val response = ApiConfig.authentication().getProfile("Bearer $token")
+
+                    response.data?.let { user ->
+                        Glide.with(context)
+                            .load(user.image)
+                            .placeholder(R.drawable.profile)
+                            .error(R.drawable.profile)
+                            .into(binding.fotoUser)
+                    }
+                } else {
+                    Toast.makeText(context, "Token not found, please log in.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Failed to load user profile: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
