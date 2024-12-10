@@ -1,14 +1,11 @@
 <resources>
     <string name="app_name">AgriCurify</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <string name="profile">Profile</string>
     <string name="settings">Settings</string>
     <string name="agricurify">AgriCurify</string>
     <string name="desc">Tanaman sehat, panen optimal. Kenali gejala penyakit dari daun tanaman Anda dengan cepat</string>
     <string name="lets_start">Ayo Mulai</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="prakiraan_cuaca">Prakiraan Cuaca</string>
     <string name="riwayat_penyakit_tumbuhan">Riwayat Penyakit Tumbuhan</string>
@@ -43,8 +40,8 @@
     <string name="downloading_model_fail">Model gagal diunduh</string>
     <string name="team_name">C242-PS224 Team</string>
     <string name="logo_app">logo app</string>
-    <string name="history">History</string>
-    <string name="history_kosong">History Kosong</string>
+    <string name="history">Riwayat</string>
+    <string name="history_kosong">Riwayat Kosong</string>
     <string name="penaganan_penyakit">Penanganan Penyakit :</string>
     <string name="preview_gambar">Preview Gambar</string>
     <string name="textview">TextView</string>
@@ -65,4 +62,10 @@
     <string name="new_pass">Password Baru</string>
     <string name="old_pass">Password Lama</string>
     <string name="change_pass">Ubah Password</string>
+    <string name="back_btn">tombol kembali</string>
+    <string name="delete_btn">tombol hapus</string>
+    <string name="scan_cam">pindai</string>
+    <string name="profile_pic">foto profil</string>
+    <string name="location">Makassar, Indonesia</string>
+    <string name="weather_pic">gambar cuaca</string>
 </resources>
