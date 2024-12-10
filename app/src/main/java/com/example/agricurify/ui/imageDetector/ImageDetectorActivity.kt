@@ -90,7 +90,7 @@ class ImageDetectorActivity : AppCompatActivity() {
                     showLoading(false)
                 }
             } catch (e: Exception) {
-                Log.e("Upload Error", "Error preparing file for upload: ${e.message}")
+                Log.e("Upload Error", "Terjadi kesalahan saat menyiapkan file untuk diunggah: ${e.message}")
                 viewModel.errorMessage.observe(this) { errorMessage ->
                     showToast(errorMessage ?: getString(R.string.upload_error_message))
 
@@ -114,7 +114,7 @@ class ImageDetectorActivity : AppCompatActivity() {
                     showLoading(false)
                 }
             } catch (e: Exception) {
-                Log.e("Upload Error", "Error preparing file for upload: ${e.message}")
+                Log.e("Upload Error", "Terjadi kesalahan saat menyiapkan file untuk diunggah: ${e.message}")
                 viewModel.errorMessage.observe(this) { errorMessage ->
                     showToast(errorMessage ?: getString(R.string.upload_error_message))
 
@@ -138,7 +138,7 @@ class ImageDetectorActivity : AppCompatActivity() {
                     showLoading(false)
                 }
             } catch (e: Exception) {
-                Log.e("Upload Error", "Error preparing file for upload: ${e.message}")
+                Log.e("Upload Error", "Terjadi kesalahan saat menyiapkan file untuk diunggah: ${e.message}")
                 viewModel.errorMessage.observe(this) { errorMessage ->
                     showToast(errorMessage ?: getString(R.string.upload_error_message))
 
@@ -153,7 +153,6 @@ class ImageDetectorActivity : AppCompatActivity() {
         val intent = Intent(this, ResultActivity::class.java).apply {
             putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
             putExtra(ResultActivity.EXTRA_MODEL_RESPONSE, response)
-            // Tambahkan flag untuk mengatur stack activity
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         }
         startActivity(intent)
