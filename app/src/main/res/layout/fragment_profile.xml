@@ -68,7 +68,7 @@
                         android:layout_gravity="end|center_vertical"
                         android:padding="0dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/baseline_settings_24"
+                        android:src="@drawable/logo_round"
                         app:shapeAppearanceOverlay="@style/imageViewCircle" />
                 </FrameLayout>
             </com.google.android.material.appbar.MaterialToolbar>
