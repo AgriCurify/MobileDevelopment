@@ -58,7 +58,6 @@ class ProfileFragment : Fragment() {
         loadProfileData()
         setupLogoutButton()
         setupUpdateButton()
-        setupImagePickerButton()
         setupFabEditButton()
         setupChangePasswordAction()
     }
@@ -243,12 +242,6 @@ class ProfileFragment : Fragment() {
     private fun getFileExtension(file: File): String {
         val fileName = file.name
         return fileName.substring(fileName.lastIndexOf(".") + 1).lowercase(Locale.getDefault())
-    }
-
-    private fun setupImagePickerButton() {
-        binding.imageView4.setOnClickListener {
-            openGallery()
-        }
     }
 
     private fun setupFabEditButton() {
