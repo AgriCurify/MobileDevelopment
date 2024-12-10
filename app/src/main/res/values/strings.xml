@@ -29,7 +29,7 @@
     <string name="SignIn">Masuk</string>
     <string name="SignUp">Daftar</string>
     <string name="sdh_punya_akun">Sudah Punya Akun?</string>
-    <string name="slmt">Selamat datang di AgriCurify! Silahkan lengkapi data dibawah ini!</string>
+    <string name="slmt">Selamat datang di AgriCurify! Silahkan lengkapi data di bawah ini!</string>
     <string name="logout">Keluar</string>
     <string name="crop_image">Crop gambar</string>
     <string name="crop_error_message">Crop gagal: %1$s</string>
