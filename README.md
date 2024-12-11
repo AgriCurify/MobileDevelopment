@@ -15,14 +15,15 @@ Mobile Development documentation and VCS for developing
 ## Tech Stack
 - Figma
 - Kotlin
+- Fragment
 - Retrofit
 - Glide
+- CircleImageView
 - Room Database
 - Data Store
 - Navigation Component
 - UCrop
 - Google Play Service Maps & Location
-- etc.
 
 ## Architecture
 * MVVM (Model–view–viewmodel)
