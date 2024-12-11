@@ -13,11 +13,13 @@ Mobile Development documentation and VCS for developing
 ## Side Feature
 - Current Weather: A feature to monitor the current weather, providing farmers with up-to-date weather information.
 - Forecast Weather: A 3-day weather forecast feature.
+- Plant Disease History: Displays the history of previously scanned diseases.
 
   
 ## Tech Stack
 - Figma
 - Kotlin
+- Material Components
 - Lifecycle LiveData and ViewModel
 - Fragment
 - Retrofit
@@ -25,7 +27,9 @@ Mobile Development documentation and VCS for developing
 - CircleImageView
 - Room Database
 - Data Store
-- Navigation Component
+- ML kit Translate
+- Navigation
+- SwipeRefreshLayout
 - UCrop
 - Google Play Service Maps & Location
 
