@@ -15,6 +15,7 @@ Mobile Development documentation and VCS for developing
 ## Tech Stack
 - Figma
 - Kotlin
+- Lifecycle LiveData and ViewModel
 - Fragment
 - Retrofit
 - Glide
