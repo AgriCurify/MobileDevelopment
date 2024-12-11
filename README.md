@@ -27,7 +27,7 @@ Mobile Development documentation and VCS for developing
 - CircleImageView
 - Room Database
 - Data Store
-- ML kit Translate
+- ML Kit Translate
 - Navigation
 - SwipeRefreshLayout
 - UCrop
